@@ -1,21 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import * as XLSX from 'xlsx';
-
+import { saveAs } from 'file-saver';
 
 function ExportPage({ tasks }) {
   const exportToExcel = () => {
-    // Create a new Excel workbook
-    const workbook = XLSX.utils.book_new();
-
-    // Create a new worksheet
     const worksheet = XLSX.utils.json_to_sheet(tasks);
-
-    // Add the worksheet to the workbook
+    const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Tasks');
-
-    // Generate an XLSX file
-    XLSX.writeFile(workbook, 'task_list.xlsx');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([excelBuffer], { type: 'application/octet-stream' }), 'task_list.xlsx');
   };
 
   return (
