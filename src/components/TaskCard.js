@@ -1,33 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './TaskCard.css';
 
-function TaskCard({ task, onUpdateTask, onDeleteTask, onMoveTask }) {
-  const { id, title, listId } = task;
+const TaskCard = ({ task, handleTaskUpdate, handleTaskDelete, handleMoveCard }) => {
+  const [editing, setEditing] = useState(false);
+  const [title, setTitle] = useState(task.title);
 
-  const handleTitleChange = (e) => {
-    const updatedTask = { ...task, title: e.target.value };
-    onUpdateTask(id, updatedTask);
-  };
-
-  const handleListChange = (e) => {
-    const newListId = e.target.value;
-    onMoveTask(id, newListId);
+  const handleUpdate = () => {
+    if (title.trim() !== '') {
+      handleTaskUpdate(task.id, title);
+      setEditing(false);
+    }
   };
 
   const handleDelete = () => {
-    onDeleteTask(id);
+    handleTaskDelete(task.id);
+  };
+
+  const handleMove = (event) => {
+    const newlistId = event.target.value;
+    handleMoveCard(task.id, newlistId);
   };
 
   return (
     <div className="task-card">
-      <input type="text" value={title} onChange={handleTitleChange} />
-      <select value={listId} onChange={handleListChange}>
-        <option value="list1">List 1</option>
-        <option value="list2">List 2</option>
-        <option value="list3">List 3</option>
-      </select>
-      <button onClick={handleDelete}>Delete</button>
+      {editing ? (
+        <div className="task-card__editing">
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <button className="task-card__save-button" onClick={handleUpdate}>
+            Save
+          </button>
+        </div>
+      ) : (
+        <p>{task.title}</p>
+      )}
+      <div className="task-card__actions">
+        <button className="task-card__edit-button" onClick={() => setEditing(!editing)}>
+          {editing ? 'Cancel' : 'Edit'}
+        </button>
+        <button className="task-card__delete-button" onClick={handleDelete}>
+          Delete
+        </button>
+        <select className="task-card__select" value={task.listId} onChange={handleMove}>
+          <option value="list1">List 1</option>
+          <option value="list2">List 2</option>
+          <option value="list3">List 3</option>
+        </select>
+      </div>
     </div>
   );
-}
+};
 
 export default TaskCard;

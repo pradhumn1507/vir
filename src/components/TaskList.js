@@ -1,23 +1,24 @@
 import React from 'react';
-import TaskCard from './TaskCard';
-import TaskForm from './TaskForm';
+import TaskCardList from './TaskCardList';
 
-function TaskList({ tasks, onAddTask, onUpdateTask, onDeleteTask, onMoveTask }) {
+const TaskList = ({ lists, tasks, handleTaskUpdate, handleTaskDelete, handleMoveCard }) => {
   return (
     <div>
-      <h2>Tasks</h2>
-      <TaskForm onAddTask={onAddTask} />
-      {tasks.map((task) => (
-        <TaskCard
-          key={task.id}
-          task={task}
-          onUpdateTask={onUpdateTask}
-          onDeleteTask={onDeleteTask}
-          onMoveTask={onMoveTask}
-        />
+      {lists.map((list) => (
+        <div key={list.id}>
+          <h2>{list.name}</h2>
+          <div>
+            <TaskCardList
+              tasks={tasks.filter((task) => task.listId === list.id)}
+              handleTaskUpdate={handleTaskUpdate}
+              handleTaskDelete={handleTaskDelete}
+              handleMoveCard={handleMoveCard}
+            />
+          </div>
+        </div>
       ))}
     </div>
   );
-}
+};
 
 export default TaskList;
